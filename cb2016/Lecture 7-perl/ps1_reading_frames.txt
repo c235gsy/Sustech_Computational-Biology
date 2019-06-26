@@ -1,0 +1,102 @@
+#!/usr/bin/perl -w
+
+# Name: Jeremy Zucker
+# email: zucker@research.dfci.harvard.edu
+# Problem Set: #1
+
+$DNA_seq = "CATTACGATGCATTG ATTTTTCAAAGGAAT GTACTATCGAAATCA CAAGTCGTGGACTAC GGTTTGCAGTGGAGG AATCGCAGTCTTTGC AGGCTCACGCCTTTC TTGATAAGTCGTTGT TTCAAACGTTTAATT TTCAGGGTGATTCAG ATGGGGATACATATA TGTTCCAGACGATGA TTTCACCT";
+
+$DNA_seq =~ s/\s+//g;
+print "Cleaned up DNA sequence of length " . length($DNA_seq) .":\n$DNA_seq\n";
+
+$RNA_seq = transcribe( $DNA_seq );
+print "\nRNA sequence: \n$RNA_seq\n";
+
+print "\nTranslated sequence: \n";
+for($j = 0; $j<3; $j++) {
+  %protein = translate($RNA_seq, $j);
+   print "\n\tReading Frame $j:\n" . $protein{"sequence"} . "\n";
+   print_histogram( %protein);
+}
+
+$reverse_compliment = reverse_compliment( $RNA_seq);
+print "\nReverse-complemented RNA sequence:\n $reverse_compliment \n";
+
+print "\nTranslation of reverse-complemented RNA sequence:\n";
+for($j = 0; $j<3; $j++) {
+ %protein = translate($reverse_compliment, $j);
+   print "\n\tReading Frame $j:\n" . $protein{"sequence"} . "\n";
+  print_histogram( %protein );
+}
+
+# Input: Hash table of amino acids (keys) and their frequencies (values)
+# Output: Prints histogram to STDOUT
+sub print_histogram {
+  my %protein = @_;
+  print "\nHistogram\n";
+  foreach $amino_acid (sort keys %protein) {
+    if(($amino_acid ne "sequence") && ($amino_acid ne "")){
+      print "$amino_acid: " . ("*" x $protein{$amino_acid}) . "\n";
+    }
+  }
+}
+
+# Input: A sequence of characters [AGCU] that represent a biologicaly functional strand of RNA 
+# Output: Reverse Complimented sequence 
+sub reverse_compliment {$
+  my $sequence = shift;
+  $sequence = reverse( $sequence );
+  $sequence =~ tr/AUGC/UACG/;
+  return $sequence;
+}
+
+# Input: a sequence of characters in [AGCU] that represents the RNA Sequence, and the reading frame (0, 1, or 2)
+# Output: A hash table which contains the frequency counts of each amino acid in the sequence and the full translated sequence
+sub translate {
+  my ($sequence, $reading_frame) = @_;
+  my %protein = ();
+    for($i=$reading_frame; $i < length($sequence); $i+=3) {
+      $codon = substr( $sequence, $i, 3);
+      $amino_acid = translate_codon( $codon );
+      $protein{$amino_acid}++;
+      $protein{"sequence"} .= $amino_acid;
+    }
+  return %protein;
+}
+
+# Input: The coding strand of the DNA sequence -- NOT the template strand that the RNA polymerase II actually reads to synthesize RNA!
+# Output: The transcribed RNA sequence.
+sub transcribe { 
+  my $sequence = shift; 
+  $sequence =~ s/T/U/gi; 
+  return $sequence; 
+} 
+
+# Input: a sequence of 3 characters that represents the tri-nucleotide codon that tRNA reads
+# Output: the 3 letter symbolic representation of the corresponding amino acid.
+sub translate_codon {
+      if ($_[0] =~ /GC[AGCU]/i) {return Ala;}  
+# If the codon matches G followed by C followed by A, G, C, or U, return Alanine;
+      if ($_[0] =~ /UGC|UGU/i) {return Cys;}  
+# If the codon matches U followed by G followed by U or C, return Cysteine
+      if ($_[0] =~ /GAC|GAU/i) {return Asp;}  # If the codon matches G followed by A followed by U or C, return Aspartic Acid;
+      if ($_[0] =~ /GAA|GAG/i) {return Glu;}  # If the codon matches G followed by A followed by A or G, return Glutamine;
+      if ($_[0] =~ /UUC|UUU/i) {return Phe;}  # If the codon matches U followed by U followed by U or C, return Phenylalanine;
+      if ($_[0] =~ /GG[AGCU]/i) {return Gly;}      # If the codon matches G followed by G followed by A, G, C, or U, return Glycine;
+      if ($_[0] =~ /CAC|CAU/i) {return His;}  # If the codon matches C followed by A followed by U or C, return Histine;
+      if ($_[0] =~ /AU[AUC]/i) {return Ile;}  # If the codon matches A followed by U followed by A, U or C, return Isoleucine;
+      if ($_[0] =~ /AAA|AAG/i) {return Lys;}      # If the codon matches A followed by A followed by A or G, return Lysine;
+      if ($_[0] =~ /UUA|UUG|CU[AGCU]/i) {return Leu;}  # If the codon matches U followed by U followed by A or G or if the codon matches C followed by U followed by A, G, C, or U, return Leucine;
+      if ($_[0] =~ /AUG/i) {return Met;}          # If the codon matches A followed by U followed by G, return Methionine;
+      if ($_[0] =~ /AAC|AAU/i) {return Asn;}      # If the codon matches A followed by A followed by U or C, return Asparagine;
+      if ($_[0] =~ /CC[AGCU]/i) {return Pro;}          # If the codon matches C followed by C followed by A, G, C, or U, return Proline;
+      if ($_[0] =~ /CAA|CAG/i) {return Gln;}      # If the codon matches C followed by A followed by A or G, return Glutamine;
+      if ($_[0] =~ /AGA|AGG|CG[AGCU]/i) {return Arg;}  # If the codon matches A followed by G followed by A or G or if te codon matches C followed by G followed by A, G, C, or U, return Arginine;
+      if ($_[0] =~ /AGC|AGU|UC[AGCU]/i) {return Ser;}  # If the codon matches A followed by G followed by C or U or if the codon matches U followed by C followed by A, G, C, or U, return Serine;
+      if ($_[0] =~ /AC[AGCU]/i) {return Thr;}          # If the codon matches A followed by C followed by A, G, C, or U, return Threonine;
+      if ($_[0] =~ /GU[AGCU]/i) {return Val;}          # If the codon matches G followed by U followed by A, G, C, or U, return Valine;
+      if ($_[0] =~ /UGG/i) {return Trp;}          # If the codon matches U followed by G followed by G, return Tryptophan;
+      if ($_[0] =~ /UAC|UAU/i) {return Tyr;}      # If the codon matches U followed by A followed by C or U, return Tyrosine;
+      if ($_[0] =~ /UAA|UGA|UAG/i) {return "***";}  # If the codon matches U followed by A followed by A or  G or if the codon matches U followed by G followed by A, return a Stop Codon;
+}
+

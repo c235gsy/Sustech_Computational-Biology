@@ -1,0 +1,71 @@
+From: "Saved by Windows Internet Explorer 10"
+Subject: 
+Date: Thu, 30 Oct 2014 09:52:07 +0800
+MIME-Version: 1.0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://ocw.mit.edu/courses/health-sciences-and-technology/hst-508-genomics-and-computational-biology-fall-2002/assignments/ps1_perl_answers_2002.pl
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.17609
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "" ""><HTML><HEAD><META content=3D"IE=3D10.000"=20
+http-equiv=3D"X-UA-Compatible">
+
+<META http-equiv=3D"Content-Type" content=3D"text/html; =
+charset=3Dutf-8">
+<META name=3D"GENERATOR" content=3D"MSHTML 10.00.9200.17028"></HEAD>
+<BODY>
+<PRE>#!/usr/bin/perl=0A=
+=0A=
+###########################=0A=
+#### The Central Dogma ####=0A=
+###########################=0A=
+=0A=
+### Genome=0A=
+$DNA_seq =3D "ATGACCCTACTAGATCATCTATGATAGCTCAT"; # DNA sequence to =
+translate=0A=
+=0A=
+### Transcription=0A=
+$RNA_seq =3D $DNA_seq; # copies DNA sequence=0A=
+$RNA_seq =3D~ s/T/U/gi; # replaces T's with U's (g=3Dglobal, i=3Dcase =
+insensitive)=0A=
+print "$RNA_seq\n"; # prints the RNA sequence=0A=
+=0A=
+### Translation=0A=
+$position =3D 0; # start position=0A=
+while (substr $RNA_seq,$position,3) { # executes loop until end of =
+string reached=0A=
+	$codon =3D substr $RNA_seq,$position,3; # defines the codon=0A=
+	print translate_codon($codon); # calls the translate codon subroutine =
+and prints result=0A=
+	$position =3D $position + 3; # moves ahead 3 bases=0A=
+}=0A=
+=0A=
+sub translate_codon { # subroutine to translate codons=0A=
+	if ($_[0] =3D~ /GC./i) {return Ala;} # matches to "GC then any letter" =
+returns Ala=0A=
+	if ($_[0] =3D~ /UGC|UGU/i) {return Cys;} # matches to UGC or UGU =
+returns Cys=0A=
+	if ($_[0] =3D~ /GAC|GAU/i) {return Asp;} # etc...=0A=
+	if ($_[0] =3D~ /GAA|GAG/i) {return Glu;}=0A=
+	if ($_[0] =3D~ /UUC|UUU/i) {return Phe;}=0A=
+	if ($_[0] =3D~ /GG./i) {return Gly;}=0A=
+	if ($_[0] =3D~ /CAC|CAU/i) {return His;}=0A=
+	if ($_[0] =3D~ /AUA|AUC|AUU/i) {return Ile;}=0A=
+	if ($_[0] =3D~ /AAA|AAG/i) {return Lys;}=0A=
+	if ($_[0] =3D~ /UUA|UUG|CU./i) {return Leu;}=0A=
+	if ($_[0] =3D~ /AUG/i) {return Met;}=0A=
+	if ($_[0] =3D~ /AAC|AAU/i) {return Asn;}=0A=
+	if ($_[0] =3D~ /CC./i) {return Pro;}=0A=
+	if ($_[0] =3D~ /CAA|CAG/i) {return Gln;}=0A=
+	if ($_[0] =3D~ /AGA|AGG|CG./i) {return Arg;}=0A=
+	if ($_[0] =3D~ /AGC|AGU|UC./i) {return Ser;}=0A=
+	if ($_[0] =3D~ /AC./i) {return Thr;}=0A=
+	if ($_[0] =3D~ /GU./i) {return Val;}=0A=
+	if ($_[0] =3D~ /UGG/i) {return Trp;}=0A=
+	if ($_[0] =3D~ /UAC|UAU/i) {return Tyr;}=0A=
+	if ($_[0] =3D~ /UAA|UGA|UAG/i) {return "***";} # Stop codons=0A=
+}=0A=
+=0A=
+</PRE></BODY></HTML>

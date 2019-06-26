@@ -1,0 +1,11 @@
+
+
+ÓİÊ«ÑÅ  identity score 100, alignment 100;
+ºØÄş   identity score 100, alignment 100;
+ÖìÒ»·²  identity score 100, alignment 100;
+ÀîÖÙäì  identity score 100, alignment 100;
+ºú¼ÒÃú  identity score 100;
+ÁõöÎ   identity score 100, alignment 100;
+¼ÖÓîº½ identity score 100
+Íõ²ıÖÉ identity score 80, alignment 80;
+Öì¾ı´ï identity score 80, alignment 80;
